@@ -71,7 +71,7 @@
 
    GridSampler exhaustively evaluates combinations of hyperparameters across a grid.
    TPESampler builds a probabilistic model to focus on promising regions, this adaptive strategy allows TPE to achieve better results faster.
-   Random is randon
+   Random is random
 
    b. **Plot a figure that has the number of trials on the x-axis, and the maximum achieved accuracy up to that point on the y-axis. Plot one curve for each sampler to compare their performance.**
 

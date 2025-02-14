@@ -38,7 +38,7 @@
 
    ![A](Lab-1/Lab1-T1-QATAccuracy.png)
 
-   As the fixed point width increases, the quantization becomes less aggressive preserving more numerical precision, and typically results in higher accuracy. However, wider widths also imply higher computational cost. The figure therefore captures the trade-off between precision and efficiency.
+   As the fixed point width increases, the quantization becomes less aggressive preserving more numerical precision, and typically results in higher accuracy. However, wider widths also imply higher computational cost. The figure therefore captures the trade off between precision and efficiency.
 
    b. **Plot separate curves for PTQ and QAT at each precision to show the effect of post-quantization fine-tuning.**
 

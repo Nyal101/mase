@@ -84,7 +84,8 @@
 
    ![A](Lab-2/overfitting_proof_2.png)
    ![A](Lab-2/overfitting_proof.png)
-2. **In Tutorial 5, NAS is used to find an optimal configuration of hyperparameters, then we use the CompressionPipeline in Mase to quantize and prune the model after search is finished. However, the final compressed model may not be optimal, since different model architectures may have different sensitivities to quantization and pruning. Ideally, we want to run a compression-aware search flow, where the quantization and pruning is considered in each trial.**
+   
+3. **In Tutorial 5, NAS is used to find an optimal configuration of hyperparameters, then we use the CompressionPipeline in Mase to quantize and prune the model after search is finished. However, the final compressed model may not be optimal, since different model architectures may have different sensitivities to quantization and pruning. Ideally, we want to run a compression-aware search flow, where the quantization and pruning is considered in each trial.**
 
    a. **In the objective function, after the model is constructed and trained for some iterations, call the CompressionPipeline to quantize and prune the model, then continue training for a few more epochs. Use the sampler that yielded the best results in Task 1 to run the compression-aware search. The objective function should return the final accuracy of the model after compression. Consider also the case where final training is performed after quantization/pruning.**
 
@@ -127,32 +128,14 @@ Below is the precison configuariaton for the two best performing trials
 a. **Now, extend the search to consider all supported precisions for the Linear layer in Mase, including Minifloat, BlockFP, BlockLog, Binary, etc. This may also require changing the model constructor so the required arguments are passed when instantiating each layer.**
 
 * **`nn.Linear`** : Standard full-precision linear transformation layer.
-
-  * The formula is $y = Wx + b$.
 * **`LinearInteger`** : Linear layer with integer quantization for weights and activations.
-
-  * $y = Q_{\text{int}}(W)x + b,\quad \text{with } Q_{\text{int}}(W) = \text{round}(W)$
 * **`LinearMinifloatDenorm`** : Linear layer using a minifloat format that handles denormal numbers. A ****denormal number** (aka subnormal number** ) is a special type of floating-point number that is **very close to zero.**
-
-  * $y = Q_{\text{minifloat\_denorm}}(W)x + b$
 * **`LinearMinifloatIEEE`** : Linear layer employing IEEE-standard minifloat quantization.
-
-  * $y = Q_{\text{minifloat\_IEEE}}(W)x + b$
 * **`LinearLog`** : Linear layer that applies logarithmic quantization to represent values.
-
-  * $y = Q_{\log}(W)x + b,\quad \text{with } Q_{\log}(W) = \operatorname{sign}(W) \cdot \log(1+|W|)$
 * **`LinearBlockFP`** : Linear layer with block floating-point quantization across groups of parameters.
-
-  * $y = Q_{\text{blockFP}}(W)x + b,\quad \text{with } Q_{\text{blockFP}}(W) = \text{BlockQuant}(W, E)$
 * **`LinearBlockMinifloat`** : Linear layer that quantizes in blocks using a minifloat format.
-
-  * $y = Q_{\text{block\_minifloat}}(W)x + b$
 * **`LinearBlockLog`** : Linear layer that applies block-wise logarithmic quantization.
-
-  * $y = Q_{\text{block\_log}}(W)x + b,\quad \text{with } Q_{\text{block\_log}}(W) = \text{BlockLogQuant}(W)$
 * **`LinearBinary`** : Binary quantized linear layer where weights and activations are binarized.
-
-  * $y = Q_{\text{binary}}(W)x + b,\quad \text{with } Q_{\text{binary}}(W) \in \{-1, +1\}$
 
 b. **Run the search again, and plot a figure that has the number of trials on the x-axis, and the maximum achieved accuracy up to that point on the y-axis. Plot one curve for each precision to compare their performance.**
 

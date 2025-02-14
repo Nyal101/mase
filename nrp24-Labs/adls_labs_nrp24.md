@@ -297,7 +297,7 @@ print("Composite metric:", composite_metric)
 
    If dont_need_abs is false, the mantissa is too small (in the 0–63 range) and must be left-shifted until the 6th bit becomes 1. The number of shifts required is factored into the scaling by computing    a bias (bias_variable = 2^(exp - 127) * C, where exp is the original MXINT8 exponent), ensuring that when the exponent is applied, the final number has the correct magnitude.
 
-   Bias is subtracted when dont_need_abs is false (i.e., when the mantissa’s top bit is not set).
+
 
    ```python
    y[i] = dont_need_abs ? out : out - bias;

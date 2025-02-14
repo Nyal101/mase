@@ -290,18 +290,12 @@ print("Composite metric:", composite_metric)
 
   The dont_need_abs and bias_variable variables adjust the mantissa’s “value” so that, after applying the exponent, the number is correctly scaled. Since MXINT lacks an implicit leading bit, the 6-bit mantissa’s most significant bit (bit 6) determines its range. If this bit is 1, the value is already in the correct range (64–127) and no adjustment is needed (dont_need_abs = True). 
 
-   The code checks if bit 6 (0x40), is 1 or 0. This bit 6 is called the flag bit.
-
-   * **If the flag (bit 6) is set (i.e., 1):**
-     The number is considered “high-range” and it is as if it were normalized (similar to having an implicit 1 in IEEE 754). No extra bias correction is needed.
-   * **If the flag is not set (i.e., 0):**
-     The number is in the “low range” (like a subnormal number) and lacks that implicit high-order bit. Therefore, a bias correction is applied during dequantization to adjust its value.
 
    ```python
    auto bias = cutlass::bfloat16_t::bitcast(sign | exp | uint16_t(0));
    ```
 
-   If flag is 0, the mantissa is too small (in the 0–63 range) and must be left-shifted until the 6th bit becomes 1. The number of shifts required is factored into the scaling by computing    a bias (bias_variable = 2^(exp - 127) * C, where exp is the original MXINT8 exponent), ensuring that when the exponent is applied, the final number has the correct magnitude.
+   If dont_need_abs is false, the mantissa is too small (in the 0–63 range) and must be left-shifted until the 6th bit becomes 1. The number of shifts required is factored into the scaling by computing    a bias (bias_variable = 2^(exp - 127) * C, where exp is the original MXINT8 exponent), ensuring that when the exponent is applied, the final number has the correct magnitude.
 
    Bias is subtracted when dont_need_abs is false (i.e., when the mantissa’s top bit is not set).
 

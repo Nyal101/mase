@@ -17,12 +17,15 @@
 
 #### Nodes Removed
 
-1. **`attention_mask`**
-   ![attention_mask](Lab-0/T2_attention_mask.png)
-2. **`labels` Before Removal**
-   ![labels_before](Lab-0/T2_labels_before.png)
-3. **`labels` After Removal**
-   ![labels_after](Lab-0/T2_labels_after.png)
+1. **`attention_mask`**  
+   <img src="Lab-0/T2_attention_mask.png" width="300">
+
+2. **`labels` Before Removal**  
+   <img src="Lab-0/T2_labels_before.png" width="300">
+
+3. **`labels` After Removal**  
+   <img src="Lab-0/T2_labels_after.png" width="300">
+
 
 ---
 

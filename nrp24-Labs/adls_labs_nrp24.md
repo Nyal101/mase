@@ -206,6 +206,7 @@ print("Composite metric:", composite_metric)
    To extend the porfiling for the SDPA kernel, I then ran for 100 iteraitons and used the new time_sdpa funciton to record averadge time per iteration.
 
    Naive SDPA average time: 0.881496 seconds per iteration (CPU)
+   
    Fused SDPA average time: 0.031410 seconds per iteration (CPU)
 
    b. **If you change the `device` to `cuda`, do you observe the same thing?**
@@ -222,6 +223,7 @@ print("Composite metric:", composite_metric)
    Fused vs. Naive SDPA: The fused SDPA implementation achieves faster execution by consolidating multiple operations into a single kernel, which minimizes redundant memory transfers and reduces kernel launch overhead.
 
    Naive SDPA average time: 0.000409 seconds per iteration (GPU)
+   
    Fused SDPA average time: 0.000138 seconds per iteration (GPU)
 
    ```python
@@ -268,7 +270,7 @@ print("Composite metric:", composite_metric)
       print(f"Fused SDPA average time: {fused_time:.6f} seconds per iteration")
 
    ```
-3. **In the third part of Lab 4 (Custom kernel), we go through how to write MXINT8 dequantization kernel and bind it to Python.**
+4. **In the third part of Lab 4 (Custom kernel), we go through how to write MXINT8 dequantization kernel and bind it to Python.**
 
    a. **How does MXINT8 benefit custom hardware if both the activation and weights in a linear layer are quantized to MXINT8?**
 

@@ -139,7 +139,7 @@ a. **Now, extend the search to consider all supported precisions for the Linear 
 
 b. **Run the search again, and plot a figure that has the number of trials on the x-axis, and the maximum achieved accuracy up to that point on the y-axis. Plot one curve for each precision to compare their performance.**
 
-For this task I complted a few experimetns. The first was to convert all layers to the selected precision type and allow tht TPE sampler to vary the quantization widths, to see the best perfomance the model could gain. Then I ran an experiment where the model selectively chagned the nn.linear layers to become quantized aswell as being able to vary the wdiths and fraitonal widths. Then fianlly i ran an experiment than intoduced a chop.pass that calculated the avergae number of bits in the model and added that to the objective fucniton to try and find an optimised model that balcaned quantization and performance. This was done for Linear Integer.
+For this task I complted a few experimetns. The first was to convert all layers to the selected precision type and allow tht TPE sampler to vary the quantization widths, to see the best perfomance the model could gain. Then I ran an experiment where the model selectively chagned the nn.linear layers to become quantized aswell as being able to vary the widths and fractional widths. Then finally I ran an experiment than intoduced a chop.pass that calculated the avergae number of bits in the model and added that to the objective fucniton to try and find an optimised model that balcaned quantization and performance. This was done for Linear Integer.
 
 ### Experiment 1: Full-Layer Quantization
 

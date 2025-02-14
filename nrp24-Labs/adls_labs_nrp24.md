@@ -197,7 +197,7 @@ print("Composite metric:", composite_metric)
 
    **Answer:**
 
-   - On CUDA, after the initial warm-up, `torch.compile` tends to show more noticeable speedups because GPU kernels benefit from optimizations like operator fusion and kernel fusion.
+   - On CUDA, after the initial warm-up, `torch.compile` tends to show more noticeable speedups because GPU kernels benefit from optimizations like operator fusion and kernel fusion. Additionally the test tensor was moved to the the gpu.
    - However, the exact benefit still depends on the model and batch size, but generally, the optimized model performs better on CUDA compared to CPU.
 2. **In the second part of Lab 4 (kernel fusion), we looked at a fused SDPA kernel.**
 

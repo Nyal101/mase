@@ -80,7 +80,7 @@
    ![A](Lab-2/sample_type_test.png)
    ![A](Lab-2/sample_type_zoom_in.png)
 
-   In my tests, I trained each model for 2 epochs due to computational constraints. 2 epochs as chosen as beoyond that the mdeols started to overfit. To evaluate the impact of running for more epochs, I conducted additional experiments on the best-performing model identified by the TPE searcher. The results indicate that increasing the number of epochs beyond two leads to overfitting, causing a decline in accuracy. Therefore, for the remaining experiments, we use this as the baseline accuracy and set the number of epochs accordingly.
+   In my tests, I trained each model for 2 because beyond 2 epochs that the models start to overfit. To evaluate the impact of running for more epochs, I conducted additional experiments on the best-performing model identified by the TPE searcher. The results indicate that increasing the number of epochs beyond 2 leads to overfitting, causing a decline in accuracy. Therefore, for the remaining experiments, we use this as the baseline accuracy and set the number of epochs accordingly when doing PTQ and QAT.
 
    ![A](Lab-2/overfitting_proof_2.png)
    ![A](Lab-2/overfitting_proof.png)

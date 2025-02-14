@@ -153,23 +153,20 @@ a. **Now, extend the search to consider all supported precisions for the Linear 
 * **`LinearBinary`** : Binary quantized linear layer where weights and activations are binarized.
 
   * $y = Q_{\text{binary}}(W)x + b,\quad \text{with } Q_{\text{binary}}(W) \in \{-1, +1\}$
-* **`LinearBinaryScaling`** : Binary linear layer variant that incorporates a scaling factor for improved training dynamics.
-
-  * $y = \alpha \, Q_{\text{binary}}(W)x + b,\quad \text{with } \alpha \text{ as a learnable scaling factor}$
 
 b. **Run the search again, and plot a figure that has the number of trials on the x-axis, and the maximum achieved accuracy up to that point on the y-axis. Plot one curve for each precision to compare their performance.**
 
-For this task I complted a few experimetns. The first was to convert all layers to the selected precision type and allow tht TPE sampler to vary the quantization widths, to see the best perfomance the model could gain. Then i ran an experiment where the model selectively chagned you nn.linear layers to become quantized aswell as being able tovary the wdiths and fraitonal wdiths. THen fianlly i ran an epeince than ointoriduce a chop.pass that caluted the avergae number of bits in the model and added that t theobjective fucniton to try and find an optimised model that balcaned quantization and peromface. this was done for Linear Integer. 
+For this task I complted a few experimetns. The first was to convert all layers to the selected precision type and allow tht TPE sampler to vary the quantization widths, to see the best perfomance the model could gain. Then I ran an experiment where the model selectively chagned the nn.linear layers to become quantized aswell as being able to vary the wdiths and fraitonal widths. Then fianlly i ran an experiment than intoduced a chop.pass that calculated the avergae number of bits in the model and added that to the objective fucniton to try and find an optimised model that balcaned quantization and performance. This was done for Linear Integer.
 
-# Experiment 1: Full-Layer Quantization
+### Experiment 1: Full-Layer Quantization
 
  ![A](Lab-3/all_layers_quantized.png)
 
-# Experiment 2: Selective Quantization for nn.Linear Layers
+### Experiment 2: Selective Quantization for nn.Linear Layers
 
  ![A](Lab-3/single_precisions/mixed_precision_all_pairs.png)
 
-# Experiment 3: Cost-Added Optimization for Balanced Performance
+### Experiment 3: Cost-Added Optimization for Balanced Performance
 
 ```python
 # Build graph from model
@@ -190,11 +187,8 @@ composite_metric = eval_results["eval_accuracy"] - alpha * (avg_bit_dict['w_avg_
 print("Composite metric:", composite_metric)
 ```
 
-
  ![A](Lab-3/cost_added1.png)
  ![A](Lab-3/cost_added2.png)
-
-
 
 ---
 
@@ -214,7 +208,7 @@ print("Composite metric:", composite_metric)
    ```
 
    - The initial iterations include significant compilation and warm-up overhead that is not amortized over only a few runs.
-   - Increasing the number of iterations and separating warm-up runs from timed runs would provide a more accurate measure of steady-state performance.
+   - Increasing the number of iterations and separating warm-up runs from timed runs proviced a more accurate measure of steady-state performance.
 
    b. **If you change the `device` to `cuda`, do you observe the same thing?**
 
@@ -238,7 +232,7 @@ print("Composite metric:", composite_metric)
    device = "cuda"
    ```
 
-   As cuda was significatnly faster I ran 50 warm up iterations followed by 10000 times iterations.
+   As cuda was significatnly faster I ran 100 warm up iterations followed by 10000 iterations.
 
    CUDA vs. CPU: CUDA demonstrates superior performance because it exploits extensive parallelism, specialized tensor cores, and higher memory bandwidth, attributes that are particularly advantageous for deep learning workloads.
 
@@ -394,8 +388,31 @@ print("Composite metric:", composite_metric)
 
    d. **Why is the saved GPU memory not exactly (32 - (4+8/32))/32 = 86.7% of the FP32 model?**
 
-   **Answer:**
+   **Answer:
 
-   _[Your answer here]_
+   The above calculation assumes converting FP32 weights to MXINT4, however the code uses MXINT8 giving a theoretical weight storage reduction of about 74.2%:
+
+   (32 - (8+8/32))/32 = 74.2%
+
+   This means that if every weight were quantized, you’d expect a 74.2% reduction for those weights. However, the overall GPU memory 	saving is lower (around 66.4% in the example) due to:
+
+   1. **Selective Quantization:**
+      The code only quantizes linear layers (excluding classifier layers). Other components (like activations, layer norms, and embeddings) remain in full precision, limiting total savings.
+
+      ```python
+      for layer_name, layer in model.named_modules():
+         if not isinstance(layer, torch.nn.Linear):
+            continue
+         if "classifier" in layer_name:
+            continue
+         layer.cuda()
+         layer_q = QLinearPacked.build_from_linear(layer, group_size=mxint8_group_size)
+         set_layer_by_name(model, layer_name, layer_q)
+         del layer
+         torch.cuda.empty_cache()
+
+      ```
+   2. **Additional Overheads**
+      GPU memory also holds activations, temporary buffers, and metadata, which are not reduced by weight quantization, further lowering the overall memory savings.
 
 ---

@@ -384,8 +384,11 @@ print("Composite metric:", composite_metric)
 
       ```python
       for layer_name, layer in model.named_modules():
+         # Skip if the module is not a Linear layer
          if not isinstance(layer, torch.nn.Linear):
             continue
+
+         # Skip any linear layer that is part of the classifier (e.g., final layer)
          if "classifier" in layer_name:
             continue
          layer.cuda()

@@ -288,14 +288,14 @@ print("Composite metric:", composite_metric)
    auto dont_need_abs = bool(mantissa_abs & 0x40);
    ```
 
-  The dont_need_abs and bias_variable variables adjust the mantissa’s “value” so that, after applying the exponent, the number is correctly scaled. Since MXINT lacks an implicit leading bit, the 6-bit mantissa’s most significant bit (bit 6) determines its range. If this bit is 1, the value is already in the correct range (64–127) and no adjustment is needed (dont_need_abs = True). 
+  This boolean flag checks whether the most significant bit of the 6-bit mantissa (i.e. bit 6, corresponding to the value 0x40) is set. If it is set, the mantissa already falls in the      “normalized” range (roughly 64–127), meaning it has the implicit “leading one” already present. In this case, no further adjustment is needed.
 
 
    ```python
    auto bias = cutlass::bfloat16_t::bitcast(sign | exp | uint16_t(0));
    ```
 
-   If dont_need_abs is false, the mantissa is too small (in the 0–63 range) and must be left-shifted until the 6th bit becomes 1. The number of shifts required is factored into the scaling by computing    a bias (bias_variable = 2^(exp - 127) * C, where exp is the original MXINT8 exponent), ensuring that when the exponent is applied, the final number has the correct magnitude.
+   If dont_need_abs is false, the mantissa is too small (in the 0–63 range) and must be left-shifted until the 6th bit becomes 1. The number of shifts required is factored into the scaling by computing a bias and subtracting it.
 
 
 
@@ -303,7 +303,7 @@ print("Composite metric:", composite_metric)
    y[i] = dont_need_abs ? out : out - bias;
    ```
 
-   This subtraction compensates for the missing leading 1, effectively reducing the exponent by 1 in bfloat16 terms, ensuring the correct reconstruction of the original value.
+   The variable bias is constructed as a bfloat16 value with the same sign and exponent as the output but with a zero mantissa. This bias effectively represents the minimum normalized value for that exponent. When dont_need_abs is false (i.e. the mantissa is in the lower range, 0–63), subtracting this bias from the initially constructed number (out) shifts the value upward into the correct numerical range. Essentially, it compensates for the lack of an implicit leading bit in the original representation.
 
    c. **How does `cta_tiler` partition data for copying to shared memory in CUDA kernel? How does `layout_sX` partition threads in a threadblock for computation? (Challenge)
 

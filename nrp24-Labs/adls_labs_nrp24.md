@@ -274,11 +274,10 @@ print("Composite metric:", composite_metric)
 
    a. **How does MXINT8 benefit custom hardware if both the activation and weights in a linear layer are quantized to MXINT8?**
 
-   When you represent both weights and activations in 8 bits, each number takes up much less space than a typical 32‑bit float.
-
-   * **Less Data to Move:** Fewer bits mean you can load and store more numbers at once, reducing memory bandwidth pressure.
-   * **More Parallelism:** Specialized hardware (like tensor cores) is optimized to perform many 8‑bit operations at once, so more calculations can happen in parallel.
-   * **Efficient Multiply-Accumulate:** With both weights and activations as 8‑bit mantissas and a single shared exponent per group, multiplications are performed directly using uniform 8‑bit units, and the exponent adjustment is applied just once per group, simplifying computation and reducing energy consumption.
+  * Reducing Memory Footprint: Using 8-bit values drastically cuts data size compared to 32-bit floats, lowering memory bandwidth requirements. This lowers memory bandwidth usage, meaning data can be fetched and written more quickly, reducing delays due to I/O bottlenecks.
+  * Increasing Throughput: Specialized hardware (e.g., tensor cores) can perform more 8-bit operations in parallel, boosting compute efficiency.
+  * Streamlining Multiply Accumulate: By using a shared exponent for a group of 8-bit mantissas, the MAC operation requires less per-value overhead (fewer exponent adjustments). This simplifies arithmetic logic, lowers energy consumption, and allows the hardware to complete MAC operations faster.
+  * Easing Kernel Fusion: When all data is in a consistent 8-bit format, multiple operations,  can be combined into a single, fused kernel. Fewer intermediate memory reads/writes reduce overhead, improving overall performance and throughput.
 
    b. **What is the purpose of the variables `dont_need_abs` and `bias` in the C++ for loop?**
 
